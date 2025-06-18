@@ -16,7 +16,6 @@ HEADERS = {
     "Connection": "keep-alive",
 }
 
-# Palabras clave
 keywords = [ "energía", "transición energética", "transición sostenible", "renovables", "nextgeneration",
     "sostenibilidad", "electricidad", "calor", "potencia", "nuclear", "solar", "eólica",
     "hidroeléctrica", "eficiencia energética", "aerogenerador", "aerotermia", "fotovoltaico",
@@ -29,7 +28,6 @@ exclusion_keywords = [ "subvención", "ayuda", "guerra", "militar", "ejército",
     "conflicto", "israel", "palestina", "iran", "ucrania", "rusia", "otan", "norte corea", "nuclear militar",
     "armamento", "defensa", "netanyahu", "trump", "putin", "hamás", "hezbolá", "suministro", "impacto", "fuentes" ]
 
-# Regex
 keywords_regex = re.compile(r'\b(?:' + '|'.join(re.escape(kw) for kw in keywords) + r')\b', re.IGNORECASE)
 exclusion_regex = re.compile(r'\b(?:' + '|'.join(re.escape(kw) for kw in exclusion_keywords) + r')\b', re.IGNORECASE)
 
@@ -99,8 +97,14 @@ if st.button("🔍 Buscar noticias"):
         st.warning("🚫 No se encontraron noticias relevantes.")
     else:
         st.success(f"✅ Se encontraron {len(df)} noticias relevantes.")
-        st.dataframe(df)
 
-        # Descarga CSV
-        csv = df.to_csv(index=False).encode("utf-8")
+        # Crear columna con enlace clicable
+        df["enlace"] = df["url"].apply(lambda x: f"[Ver noticia]({x})")
+
+        # Mostrar solo columnas necesarias
+        st.write("### Noticias encontradas:")
+        st.write(df[["medio", "título", "fecha_extraccion", "enlace"]].reset_index(drop=True))
+
+        # Descarga CSV original (sin enlace HTML)
+        csv = df.drop(columns=["enlace"]).to_csv(index=False).encode("utf-8")
         st.download_button("📥 Descargar CSV", csv, f"noticias_energia_{datetime.now().date()}.csv", "text/csv")
