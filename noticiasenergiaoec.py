@@ -6,7 +6,7 @@ import re
 from datetime import datetime
 
 st.set_page_config(page_title="Noticias Energía", layout="wide")
-st.title("🔎 Noticias Relevantes sobre Energía (España y UE)")
+st.title("⚡ Noticias de energía (OEC)")
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 \
