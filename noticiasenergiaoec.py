@@ -22,10 +22,10 @@ keywords = [ "energía", "transición energética", "transición sostenible", "r
     "biomasa", "energía térmica", "energía eléctrica", "geotermia", "almacenamiento hidroeléctrico",
     "almacenamiento térmico", "emisiones", "carbono", "descarbonización", "gases", "invernadero",
     "instalaciones", "energía verde", "fuentes de energía", "autoconsumo", "placas solares",
-    "vehículos eléctricos", "vehículos híbridos" ]
+    "vehículos eléctricos", "vehículos híbridos", "Mariano Hernández Zapata", "Zapata", "Mariano H. Zapata" ]
 
 exclusion_keywords = [ "subvención", "ayuda", "guerra", "militar", "ejército", "misil", "bomba", "ataque",
-    "conflicto", "israel", "palestina", "iran", "ucrania", "rusia", "otan", "norte corea", "nuclear militar",
+    "conflicto", "israel", "palestina", "irán", "ucrania", "rusia", "otan", "norte corea", "nuclear militar",
     "armamento", "defensa", "netanyahu", "trump", "putin", "hamás", "hezbolá", "suministro", "impacto", "fuentes" ]
 
 keywords_regex = re.compile(r'\b(?:' + '|'.join(re.escape(kw) for kw in keywords) + r')\b', re.IGNORECASE)
