@@ -16,7 +16,6 @@ HEADERS = {
     "Connection": "keep-alive",
 }
 
-# Palabras clave
 keywords = [ "energía", "transición energética", "transición sostenible", "renovables", "nextgeneration",
     "sostenibilidad", "electricidad", "calor", "potencia", "nuclear", "solar", "eólica",
     "hidroeléctrica", "eficiencia energética", "aerogenerador", "aerotermia", "fotovoltaico",
@@ -29,7 +28,6 @@ exclusion_keywords = [ "subvención", "ayuda", "guerra", "militar", "ejército",
     "conflicto", "israel", "palestina", "iran", "ucrania", "rusia", "otan", "norte corea", "nuclear militar",
     "armamento", "defensa", "netanyahu", "trump", "putin", "hamás", "hezbolá", "suministro", "impacto", "fuentes" ]
 
-# Regex
 keywords_regex = re.compile(r'\b(?:' + '|'.join(re.escape(kw) for kw in keywords) + r')\b', re.IGNORECASE)
 exclusion_regex = re.compile(r'\b(?:' + '|'.join(re.escape(kw) for kw in exclusion_keywords) + r')\b', re.IGNORECASE)
 
@@ -99,17 +97,22 @@ if st.button("🔍 Buscar noticias"):
         st.warning("🚫 No se encontraron noticias relevantes.")
     else:
         st.success(f"✅ Se encontraron {len(df)} noticias relevantes.")
-
-        # Mostrar noticias una por una con enlaces clicables
         st.write("### Noticias encontradas:")
-        for i, row in df.iterrows():
-            st.markdown(f"""
-            **📰 {row['medio']}**  
-            [{row['título']}]({row['url']})  
-            📅 Fecha: `{row['fecha_extraccion']}`  
-            ---
-            """)
 
-        # Botón de descarga CSV
+        # Mostrar cada noticia como una tarjeta elegante
+        for _, row in df.iterrows():
+            st.markdown(f"""
+            <div style="border:1px solid #DDD; border-radius:8px; padding:10px 15px; margin-bottom:10px;">
+                <p style="margin:0; font-size:14px; color:#888;">📰 <strong>{row['medio']}</strong></p>
+                <p style="margin:4px 0;">
+                    <a href="{row['url']}" target="_blank" style="font-size:16px; color:#0066cc; text-decoration:none;">
+                        {row['título']}
+                    </a>
+                </p>
+                <p style="margin:0; font-size:13px; color:#555;">📅 {row['fecha_extraccion']}</p>
+            </div>
+            """, unsafe_allow_html=True)
+
+        # Descarga CSV
         csv = df.to_csv(index=False).encode("utf-8")
         st.download_button("📥 Descargar CSV", csv, f"noticias_energia_{datetime.now().date()}.csv", "text/csv")
