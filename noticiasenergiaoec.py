@@ -97,7 +97,7 @@ def extraer_noticias():
         try:
             resultado = run_scraper(nombre, url, selector, base_url)
             news += resultado
-            msg = f"✅ {nombre}: {len(resultado)} noticias"
+            msg = f"✅ **{nombre}**: {len(resultado)} noticias"
         except Exception as e:
             msg = f"❌ {nombre}: ERROR ({e})"
         log_messages.append(msg)
