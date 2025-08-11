@@ -101,7 +101,7 @@ def extraer_noticias():
         except Exception as e:
             msg = f"❌ {nombre}: ERROR ({e})"
         log_messages.append(msg)
-        log_area.markdown("**Log provisional:**\n" + "\n".join(log_messages))
+        log_area.markdown("**LOG:**\n" + "\n".join(log_messages))
         print(msg)  # también lo manda a la consola
         progress.progress(int(i * 100 / total))
 
