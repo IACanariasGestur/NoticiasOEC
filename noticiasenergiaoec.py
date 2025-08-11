@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import re
 from datetime import datetime
+import time  # <- opcional, por si quieres pequeñas pausas visuales
 
 st.set_page_config(page_title="Noticias Energía", layout="wide")
 st.title("⚡ Noticias de energía (OEC)")
@@ -57,7 +58,7 @@ def run_scraper(nombre_medio, url, selector, base_url=None, attrs=None):
                     "fecha_extraccion": datetime.now().strftime("%Y-%m-%d")
                 })
         return results
-    except Exception as e:
+    except Exception:
         return []
 
 def extraer_noticias():
@@ -84,8 +85,24 @@ def extraer_noticias():
     ]
 
     news = []
-    for nombre, url, selector, base_url in medios:
+    total = len(medios)
+    progress = st.progress(0)                 # <- barrita
+    status = st.empty()                       # <- texto “Buscando en…”
+    start_time = datetime.now()
+
+    for i, (nombre, url, selector, base_url) in enumerate(medios, start=1):
+        status.markdown(f"🔎 Buscando en **{nombre}**… ({i}/{total})")
         news += run_scraper(nombre, url, selector, base_url)
+        progress.progress(int(i * 100 / total))  # avanza en %
+        # time.sleep(0.05)  # opcional: hace más visible el avance
+
+    # limpiar indicadores
+    status.empty()
+    progress.empty()
+
+    # feedback sutil
+    elapsed = (datetime.now() - start_time).total_seconds()
+    st.caption(f"⌛ Búsqueda completada en {elapsed:.1f} s")
 
     return pd.DataFrame(news)
 
@@ -99,7 +116,6 @@ if st.button("🔍 Buscar noticias"):
         st.success(f"✅ Se encontraron {len(df)} noticias relevantes.")
         st.write("### Noticias encontradas:")
 
-        # Mostrar cada noticia como una tarjeta elegante
         for _, row in df.iterrows():
             st.markdown(f"""
             <div style="border:1px solid #DDD; border-radius:8px; padding:10px 15px; margin-bottom:10px;">
@@ -113,6 +129,5 @@ if st.button("🔍 Buscar noticias"):
             </div>
             """, unsafe_allow_html=True)
 
-        # Descarga CSV
         csv = df.to_csv(index=False).encode("utf-8")
         st.download_button("📥 Descargar CSV", csv, f"noticias_energia_{datetime.now().date()}.csv", "text/csv")
