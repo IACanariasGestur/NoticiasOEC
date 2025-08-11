@@ -86,21 +86,27 @@ def extraer_noticias():
 
     news = []
     total = len(medios)
-    progress = st.progress(0)                 # <- barrita
-    status = st.empty()                       # <- texto “Buscando en…”
+    progress = st.progress(0)
+    status = st.empty()
+    log_area = st.empty()  # <- mostrará el log
+    log_messages = []      # <- acumula mensajes
     start_time = datetime.now()
 
     for i, (nombre, url, selector, base_url) in enumerate(medios, start=1):
         status.markdown(f"🔎 Buscando en **{nombre}**… ({i}/{total})")
-        news += run_scraper(nombre, url, selector, base_url)
-        progress.progress(int(i * 100 / total))  # avanza en %
-        # time.sleep(0.05)  # opcional: hace más visible el avance
+        try:
+            resultado = run_scraper(nombre, url, selector, base_url)
+            news += resultado
+            msg = f"✅ {nombre}: {len(resultado)} noticias"
+        except Exception as e:
+            msg = f"❌ {nombre}: ERROR ({e})"
+        log_messages.append(msg)
+        log_area.markdown("**Log provisional:**\n" + "\n".join(log_messages))
+        print(msg)  # también lo manda a la consola
+        progress.progress(int(i * 100 / total))
 
-    # limpiar indicadores
     status.empty()
     progress.empty()
-
-    # feedback sutil
     elapsed = (datetime.now() - start_time).total_seconds()
     st.caption(f"⌛ Búsqueda completada en {elapsed:.1f} s")
 
